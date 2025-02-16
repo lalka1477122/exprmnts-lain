@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Header from "./header";
+import {NavigationMenuDemo} from "./header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -21,7 +21,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >       
-<Header/>
+<NavigationMenuDemo/>
         {children}
 
           </ThemeProvider>
