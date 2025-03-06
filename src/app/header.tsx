@@ -1,7 +1,9 @@
 "use client"
 import * as React from "react"
 import Link from "next/link"
-
+import { useSession } from "next-auth/react"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
 import {
@@ -16,71 +18,46 @@ import {
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+    title: "Статьи",
+    href: "/articles",
+    description: "Интересные статьи о технологиях и сети.",
   },
   {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
+    title: "Проекты",
+    href: "/projects", 
+    description: "Наши текущие и завершенные проекты.",
   },
   {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
+    title: "О нас",
+    href: "/about",
+    description: "Информация о нашей команде и миссии.",
+  }
 ]
 
 export function NavigationMenuDemo() {
+  const { data: session } = useSession()
+
   return (
-    
-    <NavigationMenu className="">
-    
-      <NavigationMenuList>
-      <NavigationMenuItem>
-          <Link href="/home" legacyBehavior passHref>
+    <NavigationMenu className="max-w-screen-xl mx-auto px-4 py-2 flex justify-between items-center">
+      <NavigationMenuList className="flex items-center gap-6">
+        <NavigationMenuItem>
+          <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-            <p className="w-[7rem] font-mono mr-12 text-sm">exprmnts lain</p>
+              <p translate="no" className="font-mono text-sm">exprmnts lain</p>
             </NavigationMenuLink>
-            
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
 
-          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
-          
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Навигация</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+            <ul className="grid gap-10 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
-                
                 <NavigationMenuLink asChild>
-                  
                   <a
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                     href="/"
                   >
-
                     <p className="text-sm leading-tight text-muted-foreground">
                       Beautifully designed components built with Radix UI and
                       Tailwind CSS.
@@ -103,7 +80,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Components</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+            <ul className="grid w-[400px] gap-13 p-4 md:w-[1500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
@@ -119,26 +96,35 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem>
           <Link href="/more projects" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-            more projects
+              more projects
             </NavigationMenuLink>
-            
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/gallery" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-            gallery
+              gallery
             </NavigationMenuLink>
-            
           </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
+      
+      {session?.user ? (
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={session.user.image || ''} />
+            <AvatarFallback>{session.user.name?.[0]}</AvatarFallback>
+          </Avatar>
+        </div>
+      ) : (
+        <Button variant="outline">Войти</Button>
+      )}
     </NavigationMenu>
   )
 }
 
 const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
+  HTMLAnchorElement,
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
   return (
